@@ -8,24 +8,26 @@ import {
   Button,
   Typography,
 } from "@material-ui/core";
+import { useNavigate } from "react-router";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { auth } from "../firebase-config";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 
 const Login = ({ handleChange }) => {
+  const navigate = useNavigate();
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const loginFunction = () => {
     signInWithEmailAndPassword(auth, loginEmail, loginPassword)
       .then((userCredential) => {
-        const user = userCredential.user;
-        console.log(user.email);
+        // const user = userCredential.user;
+        navigate("/home");
       })
       .catch((error) => {
         // const errorCode = error.code;
         const errorMessage = error.message;
-        console.log(errorMessage);
+        alert(errorMessage);
       });
   };
   const paperStyle = {

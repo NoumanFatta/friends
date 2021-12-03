@@ -2,7 +2,7 @@ import React from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase-config";
 import { useState } from "react";
-
+import { Link } from "react-router-dom";
 import {
   Grid,
   Paper,
@@ -17,9 +17,9 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
-// import { Link } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 const Signup = () => {
+  const navigate = useNavigate();
   const paperStyle = { padding: 20, width: 300, margin: "0 auto" };
   const headerStyle = { margin: 0 };
   const avatarStyle = { backgroundColor: "#1bbd7e" };
@@ -29,18 +29,13 @@ const Signup = () => {
   const [signUppassword, setsignUppassword] = useState("");
 
   const singUpFunction = () => {
-    // createUserWithEmailAndPassword(auth, signUpemail, signUppassword)
-    console.log(signUpemail);
-    //   .then((userCredential) => {
-    //     // Signed in
-    //     const user = userCredential.user;
-    //     // ...
-    //   })
-    //   .catch((error) => {
-    //     const errorCode = error.code;
-    //     const errorMessage = error.message;
-    //     // ..
-    //   });
+    createUserWithEmailAndPassword(auth, signUpemail, signUppassword)
+      .then((userCredential) => {
+        // const user = userCredential.user;
+        alert("User created Successfully!")
+        navigate("/home");
+      })
+      .catch((error) => {});
   };
   return (
     <div className="form">

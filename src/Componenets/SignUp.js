@@ -2,7 +2,6 @@ import React from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db, storage } from "../firebase-config";
 import { useState } from "react";
-import { Link } from "react-router-dom";
 
 import {
   Grid,
@@ -39,9 +38,9 @@ const Signup = () => {
       .then((userCredential) => {
         const user = userCredential.user;
         const img = document.getElementById("img").files[0];
-        const storageRef = ref(storage, user.email);
+        const storageRef = ref(storage, `${user.email}/dp`);
         uploadBytes(storageRef, img).then((snapshot) => {
-          getDownloadURL(ref(storage, user.email))
+          getDownloadURL(ref(storage, `${user.email}/dp`))
             .then((url) => {
               setDoc(doc(db, "users", user.email), {
                 name: signUpName,

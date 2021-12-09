@@ -16,8 +16,10 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import { Link } from "react-router-dom";
-// import { useState } from "react";
+import HomeIcon from '@mui/icons-material/Home';
+import { useState } from "react";
+import PostCard from './PostCard';
+import Newsfeed from './Newsfeed'
 const drawerWidth = 240;
 
 const openedMixin = (theme) => ({
@@ -85,8 +87,17 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
+
+
+
 export default function SideBar() {
-  // const [post, setPost] = useState("")
+  const [display, setDisplay] = useState(false)
+  const displayHome = () => {
+    setDisplay(false)
+  }
+  const displayPosts = () => {
+    setDisplay(true)
+  }
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -97,7 +108,6 @@ export default function SideBar() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -132,16 +142,22 @@ export default function SideBar() {
         </DrawerHeader>
         <Divider />
         <List>
+          {["Home"].map((text) => (
+            <ListItem button onClick={displayHome} key={text}>
+              <ListItemIcon  >
+                {<HomeIcon />}
+              </ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItem>
+          ))}
+        </List>
+        <List>
           {["Posts"].map((text) => (
-            <ListItem button key={text}>
-                <ListItemIcon>
-              <Link to="/posts" className = "link">
-                 {<PictureInPictureIcon />}
-              </Link>
-                </ListItemIcon>
-              <Link to="/posts" className = "link">
-                <ListItemText primary={text} />
-              </Link>
+            <ListItem button onClick={displayPosts} key={text}>
+              <ListItemIcon>
+                {<PictureInPictureIcon />}
+              </ListItemIcon>
+              <ListItemText primary={text} />
             </ListItem>
           ))}
         </List>
@@ -159,20 +175,8 @@ export default function SideBar() {
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
-        {/* <Typography paragraph>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-          tempor incididunt ut labore et dolore magna aliqua. Rhoncus dolor purus non
-          enim praesent elementum facilisis leo vel. Risus at ultrices mi tempus
-          imperdiet. Semper risus in hendrerit gravida rutrum quisque non tellus.
-          Convallis convallis tellus id interdum velit laoreet id donec ultrices.
-          Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl suscipit
-          adipiscing bibendum est ultricies integer quis. Cursus euismod quis viverra
-          nibh cras. Metus vulputate eu scelerisque felis imperdiet proin fermentum
-          leo. Mauris commodo quis imperdiet massa tincidunt. Cras tincidunt lobortis
-          feugiat vivamus at augue. At augue eget arcu dictum varius duis at
-          consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem donec massa
-          sapien faucibus et molestie ac.
-        </Typography> */}
+        {display ? <PostCard /> : <Newsfeed />}
+
         {/* <Typography paragraph>
           Consequat mauris nunc congue nisi vitae suscipit. Fringilla est ullamcorper
           eget nulla facilisi etiam dignissim diam. Pulvinar elementum integer enim

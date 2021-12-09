@@ -12,11 +12,10 @@ import { auth, db, storage } from "../firebase-config";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { collection, addDoc } from "firebase/firestore";
 
-import uuid from 'react-uuid';
-function SimpleDialog(props) {
+function SimpleDialog(props) { 
+    const [disable, setDisable] = useState(false)
     const { onClose, open } = props;
     const [description, setDescription] = useState("");
-    const [uid, setuid] = useState(uuid());
     const handleClose = () => {
         onClose();
     };
@@ -53,10 +52,10 @@ function SimpleDialog(props) {
     }
 
     const post = () => {
-        setuid(uuid());
+        setDisable(true);
+        const uid = new Date().getTime();
         const user = auth.currentUser;
         const img = document.getElementById("img").files[0];
-        console.log(uid);
         if (img) {
             const storageRef = ref(storage, `${user.email}/posts/${uid}`);
             uploadBytes(storageRef, img).then((snapshot) => {
@@ -69,6 +68,9 @@ function SimpleDialog(props) {
                             postedOn: new Date()
                         });
                         alert("Post uploaded Successfully!");
+                        setImage(null)
+                        handleClose();
+                        setDisable(false);
                     })
                     .catch((error) => {
                         alert(error);
@@ -80,14 +82,16 @@ function SimpleDialog(props) {
                 postedBy: user.email,
                 postedOn: new Date()
             }).then(() => {
-                alert("Post added successfully!")
+                alert("Post uploaded successfully!");
+                setImage(null);
+                handleClose();
+                setDisable(false);
             })
                 .catch((error) => {
                     alert(error)
                 });
         }
     };
-
 
     return (
 
@@ -124,7 +128,7 @@ function SimpleDialog(props) {
                 </ListItem>
                 <PreviewImage />
                 <ListItem>
-                    <Button onClick={post} style={{
+                    <Button disabled = {disable} onClick={post} style={{
                         width: '100%'
                     }} variant="contained">
                         POST

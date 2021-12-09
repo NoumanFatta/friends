@@ -1,14 +1,13 @@
 import React from "react";
 import { db } from "../firebase-config";
-import { collection, getDocs, doc } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import { useState, useEffect } from "react";
-import PostCard from './PostCard';
+import Newsfeed from './Newsfeed';
 function PostData() {
     const [data, setdata] = useState([])
     const show = async () => {
         const querySnapshot = await getDocs(collection(db, "posts"));
         querySnapshot.forEach((doc) => {
-            // setdata(arr => [...arr, doc.data().img]);
             setdata(data => [...data, doc.data()]);
         });
     }
@@ -21,7 +20,7 @@ function PostData() {
             {
                 data.map((val, ind) => {
                     return (
-                        <PostCard img={val.img} key={ind} description = {val.description} />
+                        <Newsfeed img={val.img} key={ind} description = {val.description} />
                     )
                 })
             }

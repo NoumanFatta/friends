@@ -13,6 +13,16 @@
   }
 }
 
+.css-o69gx8-MuiCardMedia-root{
+  object-fit: fill !important;
+}
+
+.postDiv{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
 .App-header {
   background-color: #282c34;
   min-height: 100vh;

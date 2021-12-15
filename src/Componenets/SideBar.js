@@ -7,6 +7,7 @@ import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
+import Avatar from "@mui/material/Avatar";
 import Divider from "@mui/material/Divider";
 import PictureInPictureIcon from "@mui/icons-material/PictureInPicture";
 import IconButton from "@mui/material/IconButton";
@@ -16,14 +17,13 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import HomeIcon from '@mui/icons-material/Home';
+import HomeIcon from "@mui/icons-material/Home";
 import { useState } from "react";
-import PostCard from './PostCard';
-import PostData from './PostData';
-import Addpostcontent from './Addpostcontent'
+import PostCard from "./PostCard";
+import PostData from "./PostData";
+import Addpostcontent from "./Addpostcontent";
+
 const drawerWidth = 240;
-
-
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -90,18 +90,15 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
+export default function SideBar(props) {
 
-
-
-export default function SideBar() {
-
-  const [display, setDisplay] = useState(false)
+  const [display, setDisplay] = useState(false);
   const displayHome = () => {
-    setDisplay(false)
-  }
+    setDisplay(false);
+  };
   const displayPosts = () => {
-    setDisplay(true)
-  }
+    setDisplay(true);
+  };
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -132,6 +129,7 @@ export default function SideBar() {
           <Typography variant="h6" noWrap component="div">
             Friends
           </Typography>
+          <Avatar style={{ left: "80%" }} alt="Remy Sharp" src={props.imgURL} />
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
@@ -148,9 +146,7 @@ export default function SideBar() {
         <List>
           {["Home"].map((text) => (
             <ListItem button onClick={displayHome} key={text}>
-              <ListItemIcon  >
-                {<HomeIcon />}
-              </ListItemIcon>
+              <ListItemIcon>{<HomeIcon />}</ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>
           ))}
@@ -158,9 +154,7 @@ export default function SideBar() {
         <List>
           {["Posts"].map((text) => (
             <ListItem button onClick={displayPosts} key={text}>
-              <ListItemIcon>
-                {<PictureInPictureIcon />}
-              </ListItemIcon>
+              <ListItemIcon>{<PictureInPictureIcon />}</ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>
           ))}
@@ -179,19 +173,18 @@ export default function SideBar() {
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
-        {
-          display ?
-            <div className="postDiv">
-              <PostCard />
-              <PostCard />
-            </div>
-            :
-            <div className="postDiv">
-              <Addpostcontent />
-              <PostData />
-            </div>
-        }
+        {display ? (
+          <div className="postDiv">
+            <PostCard />
+            <PostCard />
+          </div>
+        ) : (
+          <div className="postDiv">
+            <Addpostcontent userdp = {props.imgURL} username = {props.username} />
+            <PostData />
+          </div>
+        )}
       </Box>
-    </Box >
+    </Box>
   );
 }

@@ -32,16 +32,14 @@ export default function Newsfeed(props) {
       <Card sx={{ maxWidth: 345 }}>
         <CardHeader
           avatar={
-            <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-              R
-            </Avatar>
+            <Avatar sx={{ bgcolor: red[500] }} src = {props.userdp} aria-label="recipe" />
           }
           action={
             <IconButton aria-label="settings">
               <MoreVertIcon />
             </IconButton>
           }
-          title="Shrimp and Chorizo Paella"
+          title={props.username}
           subheader="September 14, 2016"
         />
         <CardMedia
@@ -55,15 +53,7 @@ export default function Newsfeed(props) {
            {props.description}
           </Typography>
         </CardContent>
-        {/* <CardActions disableSpacing>
-          <IconButton aria-label="add to favorites">
-            <FavoriteIcon />
-          </IconButton>
-          <IconButton aria-label="share">
-            <ShareIcon />
-          </IconButton>
-  
-        </CardActions> */}
+      
       </Card>
     );
   }

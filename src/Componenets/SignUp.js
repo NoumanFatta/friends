@@ -42,7 +42,7 @@ const Signup = () => {
         uploadBytes(storageRef, img).then((snapshot) => {
           getDownloadURL(ref(storage, `${user.email}/dp`))
             .then((url) => {
-              setDoc(doc(db, "users", user.email), {
+              setDoc(doc(db, "users", user.uid), {
                 name: signUpName,
                 email: signUpemail,
                 password: signUppassword,

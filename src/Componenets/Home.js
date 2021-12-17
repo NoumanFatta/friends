@@ -8,12 +8,10 @@ import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "../firebase-config";
 
-
-
 const Name = createContext();
 const ImgUrl = createContext();
 const ID = createContext();
-
+const Email = createContext();
 
 export default function Home() {
   const [userDetails, setuserDetails] = useState({});
@@ -34,11 +32,12 @@ export default function Home() {
   }, []);
   return (
     <>
-
-      <Name.Provider value={userDetails.name} >
-        <ImgUrl.Provider value={userDetails.img} >
-          <ID.Provider value={userDetails.uid} >
-            <SideBar />
+      <Name.Provider value={userDetails.name}>
+        <ImgUrl.Provider value={userDetails.img}>
+          <ID.Provider value={userDetails.uid}>
+            <Email.Provider value = {userDetails.email} >
+              <SideBar />
+            </Email.Provider>
           </ID.Provider>
         </ImgUrl.Provider>
       </Name.Provider>
@@ -46,4 +45,4 @@ export default function Home() {
   );
 }
 
-export { Name, ImgUrl, ID }
+export { Name, ImgUrl, ID, Email };

@@ -7,12 +7,22 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import TextareaAutosize from "@mui/base/TextareaAutosize";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { auth, db, storage } from "../firebase-config";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { collection, addDoc } from "firebase/firestore";
+import { Name, ImgUrl, ID } from './Home';
+import uuid from 'react-uuid';
+
 
 function SimpleDialog(props) {
+  const name = useContext(Name);
+  const [UniqueId, setUniqueId] = useState(uuid());
+  const userDP = useContext(ImgUrl);
+  const userID = useContext(ID);
+
+
+
   const [disable, setDisable] = useState(false);
   const { onClose, open } = props;
   const [description, setDescription] = useState("");
@@ -52,38 +62,37 @@ function SimpleDialog(props) {
 
   const post = () => {
     setDisable(true);
-    const uid = new Date().getTime();
+    setUniqueId(uuid());
+    // const uid = new Date().getTime();
     const user = auth.currentUser;
     const img = document.getElementById("img").files[0];
     if (img) {
-      const storageRef = ref(storage, `${user.email}/posts/${uid}`);
-      uploadBytes(storageRef, img).then((snapshot) => {
-        getDownloadURL(ref(storage, `${user.email}/posts/${uid}`))
-          .then((url) => {
-            addDoc(collection(db, `posts`), {
-              description: description,
-              img: url,
-              postedBy: user.email,
-              postedOn: new Date(),
-              dp: props.userImage,
-              username: props.username
+      const storageRef = ref(storage, `${user.email}/posts/${UniqueId}`);
+      uploadBytes(storageRef, img)
+        .then(() => {
+          getDownloadURL(ref(storage, `${user.email}/posts/${UniqueId}`))
+            .then((url) => {
+              addDoc(collection(db, `users`, userID, "posts"), {
+                description: description,
+                img: url,
+                postedOn: new Date(),
+              });
+              alert("Post uploaded Successfully!");
+              setImage(null);
+              handleClose();
+              setDisable(false);
+            })
+            .catch((error) => {
+              alert(error);
             });
-            alert("Post uploaded Successfully!");
-            setImage(null);
-            handleClose();
-            setDisable(false);
-          })
-          .catch((error) => {
-            alert(error);
-          });
-      });
+        });
     } else {
       addDoc(collection(db, `posts`), {
         description: description,
         postedBy: user.email,
         postedOn: new Date(),
-        dp: props.userImage,
-        username: props.username
+        dp: userDP,
+        username: name
       })
         .then(() => {
           alert("Post uploaded successfully!");
@@ -149,7 +158,7 @@ function SimpleDialog(props) {
   );
 }
 
-export default function SimpleDialogDemo(props) {
+export default function SimpleDialogDemo() {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -166,9 +175,6 @@ export default function SimpleDialogDemo(props) {
         Add a post
       </Button>
       <SimpleDialog
-
-        userImage={props.userdp}
-        username = {props.username}
         open={open}
         onClose={handleClose}
       />

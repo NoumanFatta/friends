@@ -1,40 +1,39 @@
-import React from "react";
+import React, { useContext } from "react";
 import { db } from "../firebase-config";
-import { collection, orderBy } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 import { useState, useEffect } from "react";
 import Newsfeed from "./Newsfeed";
-
-import { query, onSnapshot } from "firebase/firestore";
-
+import CircularProgress from '@mui/material/CircularProgress';
+import { ID } from './Home'
 function PostData() {
-  const [data, setdata] = useState([]);
-  const show = () => {
-    const q = query(collection(db, "posts"), orderBy("postedOn", "desc"));
-    onSnapshot(q, (snapshot) => {
-      snapshot.docChanges().forEach((change) => {
-        if (change.type === "added") {
-          setdata((prevdata) => [...prevdata, change.doc.data()]);
-        }
-      });
-    });
-  };
+  const [data, setData] = useState(['loading']);
+  const uid = useContext(ID)
   useEffect(() => {
-    show();
-  }, []);
+    if (uid) {
+      onSnapshot(collection(db, 'users', uid, "posts"), (snapshot) => {
+        setData(snapshot.docs.map((doc) => doc.data()))
+      })
+    }
+  }, [uid]);
+
 
   return (
     <>
-      {data.map((val, ind) => {
-        return (
-          <Newsfeed
-            img={val.img}
-            usrename={val.username}
-            key={ind}
-            description={val.description}
-            userdp={val.dp}
-          />
-        );
-      })}
+      {data[0] === 'loading' ?
+        <CircularProgress style={{ height: '250px', width: '250px', marginTop: '100px' }} color="secondary" />
+        : data.map((val, ind) => {
+          return (
+            <Newsfeed
+              img={val.img}
+              key={ind}
+              description={val.description}
+              date={val.postedOn.toDate().toDateString()}
+              time={val.postedOn.toDate().toLocaleTimeString()}
+            />
+          );
+        })}
+
+
     </>
   );
 }

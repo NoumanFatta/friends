@@ -23,9 +23,12 @@ export default function SettingContent() {
   const emailChange = useRef(null);
   const passwordChange = useRef(null);
   const [expanded, setExpanded] = React.useState(false);
-  const [namebuttonState, setnameButtonState] = React.useState(true);
-  const [emailButtonState, setemailButtonState] = React.useState(true);
-  const [passwordButtonState, setpasswordButtonState] = React.useState(true);
+
+  const [buttonState, setButtonState] = React.useState({
+    nameButton: true,
+    emailButton: true,
+    passwordButton: true
+  })
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
@@ -39,7 +42,7 @@ export default function SettingContent() {
     if (elementid === "email") {
       if (email === "") alert("Textbox must not be empty");
       else {
-        setemailButtonState(false);
+        setButtonState({...buttonState,  emailButton: false });
         updateEmail(auth.currentUser, email)
           .then(() => {
             setDoc(
@@ -55,13 +58,14 @@ export default function SettingContent() {
           })
           .catch((error) => {
             alert(error.message);
-            setemailButtonState(true);
+            setButtonState({...buttonState,  emailButton: true} );
           });
       }
     } else if (elementid === "password") {
       if (password === "") alert("Textbox must not be empty");
       else {
-        setpasswordButtonState(false);
+        setButtonState({...buttonState,  passwordButton: false });
+
         updatePassword(auth.currentUser, password)
           .then(() => {
             setDoc(
@@ -77,13 +81,13 @@ export default function SettingContent() {
           })
           .catch((error) => {
             alert(error.message);
-            setpasswordButtonState(true);
+            setButtonState({...buttonState,  passwordButton: true });
           });
       }
     } else if (elementid === "name") {
       if (name === "") alert("Textbox must not be empty");
       else {
-        setnameButtonState(false);
+        setButtonState({...buttonState,  nameButton: false });
         setDoc(
           docRef,
           {
@@ -125,7 +129,7 @@ export default function SettingContent() {
               marginTop: "9px",
             }}
           >
-            {namebuttonState ? (
+            {buttonState.nameButton ? (
               <Button
                 id="name"
                 onClick={(e) => updateUser(e)}
@@ -173,7 +177,7 @@ export default function SettingContent() {
               marginTop: "9px",
             }}
           >
-            {emailButtonState ? (
+            {buttonState.emailButton ? (
               <Button
                 id="email"
                 onClick={(e) => updateUser(e)}
@@ -222,7 +226,7 @@ export default function SettingContent() {
               marginTop: "9px",
             }}
           >
-            {passwordButtonState ? (
+            {buttonState.passwordButton ? (
               <Button
                 id="password"
                 onClick={(e) => updateUser(e)}

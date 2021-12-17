@@ -93,7 +93,7 @@ const Drawer = styled(MuiDrawer, {
 
 export default function SideBar() {
   const dpURL = useContext(ImgUrl);
-  const [display, setDisplay] = useState(false);
+  const [display, setDisplay] = useState(true);
   const displayHome = () => {
     setDisplay(false);
   };

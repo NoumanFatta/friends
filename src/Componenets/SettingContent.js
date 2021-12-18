@@ -8,27 +8,18 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
 import LoadingButton from "@material-ui/lab/LoadingButton";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { db } from "../firebase-config";
 import { useRef } from "react";
 import { auth } from "../firebase-config";
-import { updateEmail, updatePassword, onAuthStateChanged } from "firebase/auth";
-
+import { updateEmail, updatePassword } from "firebase/auth";
+import {EmailContext, NameContext, UidContext} from '../UserContext'
 export default function SettingContent() {
-  const [userDetails, setuserDetails] = React.useState({});
-  React.useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const uid = user.uid;
-        const docRef = doc(db, "users", uid);
-        getDoc(docRef).then((doc) => {
-          setuserDetails({ ...doc.data(), uid });
-        });
-      } else {
+ 
+  const name = React.useContext(NameContext);
+  const email = React.useContext(EmailContext);
+  const uid = React.useContext(UidContext);
 
-      }
-    });
-  }, []);
   const nameChange = useRef(null);
   const emailChange = useRef(null);
   const passwordChange = useRef(null);
@@ -48,7 +39,7 @@ export default function SettingContent() {
     const name = nameChange.current.value;
     const email = emailChange.current.value;
     const password = passwordChange.current.value;
-    const docRef = doc(db, "users", userDetails.uid);
+    const docRef = doc(db, "users", uid);
     if (elementid === "email") {
       if (email === "") alert("Textbox must not be empty");
       else {
@@ -123,7 +114,7 @@ export default function SettingContent() {
           id="panel1bh-header"
         >
           <Typography sx={{ width: "33%", flexShrink: 0 }}>Name</Typography>
-          <Typography sx={{ color: "text.secondary" }}>{userDetails.name}</Typography>
+          <Typography sx={{ color: "text.secondary" }}>{name}</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <TextField
@@ -171,7 +162,7 @@ export default function SettingContent() {
           id="panel2bh-header"
         >
           <Typography sx={{ width: "33%", flexShrink: 0 }}>Email</Typography>
-          <Typography sx={{ color: "text.secondary" }}>{userDetails.email}</Typography>
+          <Typography sx={{ color: "text.secondary" }}>{email}</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <TextField
@@ -239,7 +230,7 @@ export default function SettingContent() {
             {buttonState.passwordButton ? (
               <Button
                 id="password"
-                onClick={(e) => updateUser(e)}
+                // onClick={(e) => updateUser(e)}
                 variant="contained"
                 endIcon={<PublishedWithChangesIcon />}
               >

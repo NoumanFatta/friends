@@ -5,7 +5,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
-import SettingsIcon from '@mui/icons-material/Settings';
+import InboxIcon from '@mui/icons-material/MoveToInbox';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -13,18 +13,16 @@ import ListItemText from '@mui/material/ListItemText';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import NewspaperIcon from '@mui/icons-material/Newspaper';
-import { NavLink } from 'react-router-dom';
-
-
+import { Link } from 'react-router-dom';
 const drawerWidth = 240;
+const navLinks = [
+    { name: "News Feed", link: '/home', icon: <InboxIcon /> },
+    { name: "New Page", link: '/newpage', icon: <InboxIcon /> }
+]
 function Navbar(props) {
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
-    const navLinks = [
-        { name: "News Feed", link: '/home', icon: <NewspaperIcon /> },
-        { name: "Settings", link: `/settings`, icon: <SettingsIcon /> }
-    ]
+
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
@@ -35,14 +33,14 @@ function Navbar(props) {
             <Divider />
             <List>
                 {navLinks.map((data, index) => (
-                    <NavLink to={data.link} activeClassName='active'>
+                    <Link to={data.link} >
                         <ListItem button key={index}>
                             <ListItemIcon>
                                 {data.icon}
                             </ListItemIcon>
                             <ListItemText primary={data.name} />
                         </ListItem>
-                    </NavLink>
+                    </Link>
                 ))}
             </List>
             <Divider />

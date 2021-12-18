@@ -7,22 +7,33 @@
   pointer-events: none;
 }
 
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.active {
+  color: #1976d2;
+  text-decoration: none;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
 }
 
-.css-o69gx8-MuiCardMedia-root{
+.css-o69gx8-MuiCardMedia-root {
   object-fit: fill !important;
 }
 
-.postDiv{
+.postDiv {
   display: flex;
   justify-content: center;
   flex-direction: column-reverse;
   align-items: center;
 }
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -42,6 +53,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }

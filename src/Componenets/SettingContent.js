@@ -8,17 +8,27 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
 import LoadingButton from "@material-ui/lab/LoadingButton";
-import { Name, ID, Email } from "./Home";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import { db } from "../firebase-config";
 import { useRef } from "react";
 import { auth } from "../firebase-config";
-import { updateEmail, updatePassword } from "firebase/auth";
+import { updateEmail, updatePassword, onAuthStateChanged } from "firebase/auth";
 
 export default function SettingContent() {
-  const username = React.useContext(Name);
-  const userID = React.useContext(ID);
-  const userEmail = React.useContext(Email);
+  const [userDetails, setuserDetails] = React.useState({});
+  React.useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const uid = user.uid;
+        const docRef = doc(db, "users", uid);
+        getDoc(docRef).then((doc) => {
+          setuserDetails({ ...doc.data(), uid });
+        });
+      } else {
+
+      }
+    });
+  }, []);
   const nameChange = useRef(null);
   const emailChange = useRef(null);
   const passwordChange = useRef(null);
@@ -38,11 +48,11 @@ export default function SettingContent() {
     const name = nameChange.current.value;
     const email = emailChange.current.value;
     const password = passwordChange.current.value;
-    const docRef = doc(db, "users", userID);
+    const docRef = doc(db, "users", userDetails.uid);
     if (elementid === "email") {
       if (email === "") alert("Textbox must not be empty");
       else {
-        setButtonState({...buttonState,  emailButton: false });
+        setButtonState({ ...buttonState, emailButton: false });
         updateEmail(auth.currentUser, email)
           .then(() => {
             setDoc(
@@ -58,13 +68,13 @@ export default function SettingContent() {
           })
           .catch((error) => {
             alert(error.message);
-            setButtonState({...buttonState,  emailButton: true} );
+            setButtonState({ ...buttonState, emailButton: true });
           });
       }
     } else if (elementid === "password") {
       if (password === "") alert("Textbox must not be empty");
       else {
-        setButtonState({...buttonState,  passwordButton: false });
+        setButtonState({ ...buttonState, passwordButton: false });
 
         updatePassword(auth.currentUser, password)
           .then(() => {
@@ -81,13 +91,13 @@ export default function SettingContent() {
           })
           .catch((error) => {
             alert(error.message);
-            setButtonState({...buttonState,  passwordButton: true });
+            setButtonState({ ...buttonState, passwordButton: true });
           });
       }
     } else if (elementid === "name") {
       if (name === "") alert("Textbox must not be empty");
       else {
-        setButtonState({...buttonState,  nameButton: false });
+        setButtonState({ ...buttonState, nameButton: false });
         setDoc(
           docRef,
           {
@@ -113,7 +123,7 @@ export default function SettingContent() {
           id="panel1bh-header"
         >
           <Typography sx={{ width: "33%", flexShrink: 0 }}>Name</Typography>
-          <Typography sx={{ color: "text.secondary" }}>{username}</Typography>
+          <Typography sx={{ color: "text.secondary" }}>{userDetails.name}</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <TextField
@@ -161,7 +171,7 @@ export default function SettingContent() {
           id="panel2bh-header"
         >
           <Typography sx={{ width: "33%", flexShrink: 0 }}>Email</Typography>
-          <Typography sx={{ color: "text.secondary" }}>{userEmail}</Typography>
+          <Typography sx={{ color: "text.secondary" }}>{userDetails.email}</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <TextField
@@ -263,8 +273,7 @@ export default function SettingContent() {
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
-            Nunc vitae orci ultricies, auctor nunc in, volutpat nisl. Integer
-            sit amet egestas eros, vitae egestas augue. Duis vel est augue.
+            lorem ipsum
           </Typography>
         </AccordionDetails>
       </Accordion>

@@ -4,8 +4,9 @@ import Login from "./Componenets/Login";
 import SignUp from "./Componenets/SignUp";
 import Home from "./Componenets/Home";
 import Settings from './Componenets/Settings';
+import Profile from "./Componenets/Profile";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { NameContext, EmailContext, UidContext } from './UserContext';
+import { NameContext, EmailContext, UidContext,DpContext } from './UserContext';
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "./firebase-config";
@@ -34,12 +35,15 @@ function App() {
       <EmailContext.Provider value={userDetails.email} >
         <UidContext.Provider value={userDetails.uid} >
           <NameContext.Provider value={userDetails.name} >
-            <Routes>
+          <DpContext.Provider value={userDetails.img} >
+          <Routes>
               <Route path="/" element={<Login />} />
               <Route path="/signup" element={<SignUp />} />
               <Route path="/home" element={<Home />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/:id" element={<Profile />} />
             </Routes>
+          </DpContext.Provider>
           </NameContext.Provider>
         </UidContext.Provider>
       </EmailContext.Provider>

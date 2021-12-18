@@ -10,11 +10,11 @@ import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import { red } from "@mui/material/colors";
-import { Name, ImgUrl } from './Home';
 // import FavoriteIcon from "@mui/icons-material/Favorite";
 // import ShareIcon from "@mui/icons-material/Share";
 // import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { DpContext, NameContext } from "../UserContext";
 
 // const ExpandMore = styled((props) => {
 //   const { expand, ...other } = props;
@@ -29,12 +29,12 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 export default function Newsfeed(props){
 
-  const name = React.useContext(Name);
-  const userDP = React.useContext(ImgUrl);
+  const name = React.useContext(NameContext);
+  const userDP = React.useContext(DpContext);
 
 
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card style={{marginBottom:'30px'}} sx={{ maxWidth: 345 }}>
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: red[500] }} src={userDP} aria-label="recipe" />

@@ -5,6 +5,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
+import CircularProgress from '@mui/material/CircularProgress';
 import SettingsIcon from '@mui/icons-material/Settings';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -15,16 +16,25 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import NewspaperIcon from '@mui/icons-material/Newspaper';
 import { NavLink } from 'react-router-dom';
-
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { UidContext } from '../UserContext';
 
 const drawerWidth = 240;
 function Navbar(props) {
+    const id = React.useContext(UidContext)
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
-    const navLinks = [
-        { name: "News Feed", link: '/home', icon: <NewspaperIcon /> },
-        { name: "Settings", link: `/settings`, icon: <SettingsIcon /> }
-    ]
+    const [navLinks, setNavLinks] = React.useState('loading')
+    React.useEffect(() => {
+        if (id) {
+            setNavLinks([
+                { name: "Profile", link: `/${id}`, icon: <AccountCircleIcon /> },
+                { name: "News Feed", link: '/home', icon: <NewspaperIcon /> },
+                { name: "Settings", link: `/settings`, icon: <SettingsIcon /> }
+            ])
+        }
+
+    }, [id])
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
@@ -33,18 +43,28 @@ function Navbar(props) {
         <div>
             <Toolbar />
             <Divider />
+
+
             <List>
-                {navLinks.map((data, index) => (
-                    <NavLink to={data.link} activeClassName='active'>
-                        <ListItem button key={index}>
-                            <ListItemIcon>
-                                {data.icon}
-                            </ListItemIcon>
-                            <ListItemText primary={data.name} />
-                        </ListItem>
-                    </NavLink>
-                ))}
+                {
+                    navLinks !== 'loading' ?
+                        navLinks.map((data, index) => (
+                            <NavLink to={data.link}  key={index}>
+                                <ListItem button>
+                                    <ListItemIcon>
+                                        {data.icon}
+                                    </ListItemIcon>
+                                    <ListItemText primary={data.name} />
+                                </ListItem>
+                            </NavLink>
+                        ))
+                        :
+                        <div style = {{diplay: 'flex', textAlign: 'center'}} >
+                            <CircularProgress style={{ height: '50px', width: '50px'}} color="secondary" />
+                        </div>
+                }
             </List>
+
             <Divider />
         </div>
     );

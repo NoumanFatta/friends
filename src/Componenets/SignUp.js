@@ -38,9 +38,9 @@ const Signup = () => {
       .then((userCredential) => {
         const user = userCredential.user;
         const img = document.getElementById("img").files[0];
-        const storageRef = ref(storage, `${user.email}/dp`);
+        const storageRef = ref(storage, `${user.uid}/dp`);
         uploadBytes(storageRef, img).then((snapshot) => {
-          getDownloadURL(ref(storage, `${user.email}/dp`))
+          getDownloadURL(ref(storage, `${user.uid}/dp`))
             .then((url) => {
               setDoc(doc(db, "users", user.uid), {
                 name: signUpName,

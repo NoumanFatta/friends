@@ -230,7 +230,7 @@ export default function SettingContent() {
             {buttonState.passwordButton ? (
               <Button
                 id="password"
-                // onClick={(e) => updateUser(e)}
+                onClick={(e) => updateUser(e)}
                 variant="contained"
                 endIcon={<PublishedWithChangesIcon />}
               >

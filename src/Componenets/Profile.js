@@ -7,9 +7,7 @@ import { useParams } from 'react-router-dom';
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase-config";
 
-const ProfileID = createContext(null);
-const ProfileImage = createContext(null);
-const ProfileName = createContext(null);
+const UserDetails = createContext(null);
 
 
 export default function Profile() {
@@ -30,15 +28,13 @@ export default function Profile() {
         <SideBar />
         <Box component="main" sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}>
           <Toolbar />
-          <ProfileName.Provider value={userDetails.name} >
-            <ProfileImage.Provider value={userDetails.img} >
+          <UserDetails.Provider value={userDetails} >
               <ProfileDetails />
-            </ProfileImage.Provider>
-          </ProfileName.Provider>
+          </UserDetails.Provider>
         </Box>
       </Box>
     </>
   );
 }
 
-export { ProfileName, ProfileImage }
+export { UserDetails }

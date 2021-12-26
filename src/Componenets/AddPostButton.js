@@ -31,6 +31,17 @@ export default function FormDialog() {
         }
     };
 
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setDisable(true);
+        setOpen(false);
+        setImage([]);
+        setDescription('')
+    };
+
     const post = () => {
         setDisable(true);
         setUniqueId(uuid());
@@ -47,10 +58,7 @@ export default function FormDialog() {
                                 postedOn: new Date(),
                                 postedBy: user.uid
                             });
-                            alert("Post uploaded Successfully!");
-                            setImage([]);
                             handleClose();
-                            setDisable(false);
                         })
                         .catch((error) => {
                             alert(error);
@@ -63,23 +71,12 @@ export default function FormDialog() {
                 postedBy: user.uid
             })
                 .then(() => {
-                    alert("Post uploaded successfully!");
-                    setImage([]);
                     handleClose();
-                    setDisable(false);
                 })
                 .catch((error) => {
                     alert(error);
                 });
         }
-    };
-
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
     };
 
     return (

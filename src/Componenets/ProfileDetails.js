@@ -3,28 +3,42 @@ import Avatar from '@mui/material/Avatar';
 import { UserDetails } from './Profile';
 import Cards from './Cards';
 import { db } from '../firebase-config';
-import { onSnapshot, collection, where, query } from 'firebase/firestore'
+import CircularProgress from '@mui/material/CircularProgress';
+import { onSnapshot, collection, where, query,orderBy } from 'firebase/firestore';
+import AddPostButton from './AddPostButton';
+import { UidContext } from '../UserContext';
+
 function ProfileDetails() {
     const userDetails = useContext(UserDetails);
-    const [postData, setPostData] = useState([])
-    useEffect(() => {
-        if (userDetails.uid) {
-            onSnapshot(query(collection(db, 'posts'), where('postedBy', '==', userDetails.uid)), (snapshot) => {
-                setPostData(snapshot.docs.map((doc) => doc.data()))
-            })
-        }
-    }, [userDetails]);
+    const [postData, setPostData] = useState(['loading']);
+    const [isAdmin, setIsAdmin] = useState(false);
+    const currentUserId = useContext(UidContext);
+    useEffect(
+        () => {
+            if (userDetails.uid) {
+                const q = query(collection(db, 'posts'), where('postedBy', '==', userDetails.uid), orderBy('postedOn', 'desc'))
+                const unsub = onSnapshot(q, (snapshot) =>
+                    setPostData(snapshot.docs.map((doc) => doc.data()))
+                );
+                if ((userDetails.uid && currentUserId) && userDetails.uid === currentUserId) setIsAdmin(true);
+                else setIsAdmin(false);
+                return unsub;
+            }
+        }, [userDetails, currentUserId]);
     return (
         <>
             <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }} >
-                <Avatar sx={{ width: 250, height: 250 }} style={{ cursor: 'pointer' }} alt="Remy Sharp" src={userDetails.img} />
+                <Avatar sx={{ width: 250, height: 250 }} style={{ cursor: 'pointer' }} alt="user profile" src={userDetails.img} />
                 <h1>{userDetails.name}</h1>
-               
-                {postData.map((val,ind) => (
-                    <div key = {ind} style={{ marginTop: '30px' }} >
-                        <Cards postdata = {val} />
-                    </div>
-                ))}
+
+                {isAdmin ? <AddPostButton /> : null}
+                {postData[0] === 'loading' ?
+                    <CircularProgress style={{ height: '100px', width: '100px', marginTop: '100px', color: '#1976d2' }} />
+                    : postData.map((val, ind) => (
+                        <div key={ind} style={{ marginTop: '30px' }} >
+                            <Cards postdata={val} />
+                        </div>
+                    ))}
 
             </div>
         </>

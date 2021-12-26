@@ -49,7 +49,7 @@ function Navbar(props) {
                 {
                     navLinks !== 'loading' ?
                         navLinks.map((data, index) => (
-                            <NavLink to={data.link}  key={index}>
+                            <NavLink to={data.link} key={index}>
                                 <ListItem button>
                                     <ListItemIcon>
                                         {data.icon}
@@ -59,8 +59,8 @@ function Navbar(props) {
                             </NavLink>
                         ))
                         :
-                        <div style = {{diplay: 'flex', textAlign: 'center'}} >
-                            <CircularProgress style={{ height: '50px', width: '50px'}} color="secondary" />
+                        <div style={{ diplay: 'flex', textAlign: 'center' }} >
+                            <CircularProgress style={{ height: '50px', width: '50px', color: '#1976d2' }} color="secondary" />
                         </div>
                 }
             </List>

@@ -1,7 +1,5 @@
-import { createContext } from "react";
-const NameContext = createContext(null);
-const EmailContext = createContext(null);
-const UidContext = createContext(null);
-const DpContext = createContext(null);
+import { createContext} from "react";
 
-export {NameContext,EmailContext,UidContext,DpContext}
+const UserContext = createContext(null);
+
+export {UserContext}

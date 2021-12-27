@@ -1,7 +1,6 @@
-import React from "react";
+import React,{ useState,useRef } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db, storage } from "../firebase-config";
-import { useState } from "react";
 
 import {
   Grid,
@@ -28,13 +27,24 @@ const Signup = () => {
   const avatarStyle = { backgroundColor: "#1bbd7e" };
   const marginTop = { marginTop: 5 };
 
-  const [signUpName, setSignUpName] = useState("");
-  const [signUpemail, setsignUpemail] = useState("");
-  const [signUpGender, setSignUpGender] = useState("");
-  const [signUppassword, setsignUppassword] = useState("");
-  const [signUpNumber, setSignUpNumber] = useState("");
+  const [gender, setGender] = useState("");
+  
+  const firstNameRef = useRef(null)
+  const lastNameRef = useRef(null)
+  const emailRef = useRef(null)
+  const passwordRef = useRef(null)
+  const numberRef = useRef(null)
+
+
+  
+
   const singUpFunction = () => {
-    createUserWithEmailAndPassword(auth, signUpemail, signUppassword)
+    const firstName = firstNameRef.current.value;
+    const lastName = lastNameRef.current.value;
+    const email = emailRef.current.value;
+    const password = passwordRef.current.value;
+    const number = numberRef.current.value;
+    createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
         const img = document.getElementById("img").files[0];
@@ -43,17 +53,23 @@ const Signup = () => {
           getDownloadURL(ref(storage, `${user.uid}/dp`))
             .then((url) => {
               setDoc(doc(db, "users", user.uid), {
-                name: signUpName,
-                email: signUpemail,
-                password: signUppassword,
-                gender: signUpGender,
-                number: signUpNumber,
-                img: url
-              });
-              alert("User created Successfully!");
-              navigate("/home");
+                firstName,
+                lastName,
+                email,
+                password,
+                gender,
+                number,
+                img: url,
+                name: firstName.toLowerCase().replace(/\s/g, '')+lastName.toLowerCase().replace(/\s/g, ''),
+                uid: user.uid
+              })
+                .then(() => {
+                  alert("User created Successfully!");
+                  navigate("/home");
+                  window.location.reload();
+                });
             })
-            .catch((error) => {});
+            .catch((error) => { });
         });
       })
       .catch((error) => {
@@ -76,25 +92,27 @@ const Signup = () => {
           <form>
             <TextField
               fullWidth
-              label="Name"
-              placeholder="Enter your name"
-              onChange={(e) => {
-                setSignUpName(e.target.value);
-              }}
+              label="First Namme"
+              placeholder="Enter your Last Name"
+              inputRef={firstNameRef}
+            />
+            <TextField
+              fullWidth
+              label="Last Name"
+              placeholder="Enter your Last Name"
+              inputRef={lastNameRef}
             />
             <TextField
               fullWidth
               label="Email"
               placeholder="Enter your email"
-              onChange={(e) => {
-                setsignUpemail(e.target.value);
-              }}
+              inputRef={emailRef}
             />
             <FormControl component="fieldset" style={marginTop}>
               <FormLabel component="legend">Gender</FormLabel>
               <RadioGroup
                 onChange={(e) => {
-                  setSignUpGender(e.target.value);
+                  setGender(e.target.value);
                 }}
                 aria-label="gender"
                 name="gender"
@@ -113,9 +131,7 @@ const Signup = () => {
               </RadioGroup>
             </FormControl>
             <TextField
-              onChange={(e) => {
-                setsignUppassword(e.target.value);
-              }}
+             inputRef={passwordRef}
               fullWidth
               label="Password"
               placeholder="Enter your password"
@@ -124,13 +140,10 @@ const Signup = () => {
               fullWidth
               label="Phone Number"
               placeholder="Enter your phone number"
-              onChange={(e) => {
-                setSignUpNumber(e.target.value);
-              }}
+              inputRef={numberRef}
             />
 
             <input
-              // onChange={handleFileSelected}
               type="file"
               id="img"
               accept="image/*"

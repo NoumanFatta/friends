@@ -13,12 +13,10 @@ import { db } from "../firebase-config";
 import { useRef } from "react";
 import { auth } from "../firebase-config";
 import { updateEmail, updatePassword } from "firebase/auth";
-import {EmailContext, NameContext, UidContext} from '../UserContext'
+import {UserContext} from '../UserContext'
 export default function SettingContent() {
  
-  const name = React.useContext(NameContext);
-  const email = React.useContext(EmailContext);
-  const uid = React.useContext(UidContext);
+  const userDetails = React.useContext(UserContext);
 
   const nameChange = useRef(null);
   const emailChange = useRef(null);
@@ -39,7 +37,7 @@ export default function SettingContent() {
     const name = nameChange.current.value;
     const email = emailChange.current.value;
     const password = passwordChange.current.value;
-    const docRef = doc(db, "users", uid);
+    const docRef = doc(db, "users", userDetails.uid);
     if (elementid === "email") {
       if (email === "") alert("Textbox must not be empty");
       else {
@@ -114,7 +112,7 @@ export default function SettingContent() {
           id="panel1bh-header"
         >
           <Typography sx={{ width: "33%", flexShrink: 0 }}>Name</Typography>
-          <Typography sx={{ color: "text.secondary" }}>{name}</Typography>
+          <Typography sx={{ color: "text.secondary" }}>{userDetails.name}</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <TextField
@@ -162,7 +160,7 @@ export default function SettingContent() {
           id="panel2bh-header"
         >
           <Typography sx={{ width: "33%", flexShrink: 0 }}>Email</Typography>
-          <Typography sx={{ color: "text.secondary" }}>{email}</Typography>
+          <Typography sx={{ color: "text.secondary" }}>{userDetails.email}</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <TextField

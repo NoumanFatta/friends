@@ -6,13 +6,13 @@ import { db } from '../firebase-config';
 import CircularProgress from '@mui/material/CircularProgress';
 import { onSnapshot, collection, where, query,orderBy } from 'firebase/firestore';
 import AddPostButton from './AddPostButton';
-import { UidContext } from '../UserContext';
+import { UserContext } from '../UserContext';
 
 function ProfileDetails() {
     const userDetails = useContext(UserDetails);
     const [postData, setPostData] = useState(['loading']);
     const [isAdmin, setIsAdmin] = useState(false);
-    const currentUserId = useContext(UidContext);
+    const currentUserDetails = useContext(UserContext);
     useEffect(
         () => {
             if (userDetails.uid) {
@@ -20,11 +20,11 @@ function ProfileDetails() {
                 const unsub = onSnapshot(q, (snapshot) =>
                     setPostData(snapshot.docs.map((doc) => doc.data()))
                 );
-                if ((userDetails.uid && currentUserId) && userDetails.uid === currentUserId) setIsAdmin(true);
+                if ((userDetails.uid && currentUserDetails.uid) && userDetails.uid === currentUserDetails.uid) setIsAdmin(true);
                 else setIsAdmin(false);
                 return unsub;
             }
-        }, [userDetails, currentUserId]);
+        }, [userDetails, currentUserDetails.uid]);
     return (
         <>
             <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }} >

@@ -15,26 +15,29 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import NewspaperIcon from '@mui/icons-material/Newspaper';
-import { NavLink } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { UidContext } from '../UserContext';
+import { UserContext } from '../UserContext';
+import Button from '@mui/material/Button';
+import { auth } from '../firebase-config';
+import { signOut } from "firebase/auth";
 
 const drawerWidth = 240;
 function Navbar(props) {
-    const id = React.useContext(UidContext)
+    const navigate = useNavigate();
+    const userDetails = React.useContext(UserContext)
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [navLinks, setNavLinks] = React.useState('loading')
     React.useEffect(() => {
-        if (id) {
+        if (userDetails?.uid) {
             setNavLinks([
-                { name: "Profile", link: `/${id}`, icon: <AccountCircleIcon /> },
+                { name: "Profile", link: `/${userDetails.uid}`, icon: <AccountCircleIcon /> },
                 { name: "News Feed", link: '/home', icon: <NewspaperIcon /> },
                 { name: "Settings", link: `/settings`, icon: <SettingsIcon /> }
             ])
         }
-
-    }, [id])
+    }, [userDetails])
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
@@ -70,7 +73,14 @@ function Navbar(props) {
     );
 
     const container = window !== undefined ? () => window().document.body : undefined;
-
+    const logOut = () => {
+        signOut(auth).then(() => {
+            alert("Logging out..");
+            navigate("/");
+        }).catch((error) => {
+            alert(error);
+        });
+    }
     return (
         <>
             <CssBaseline />
@@ -91,9 +101,12 @@ function Navbar(props) {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" noWrap component="div">
+                    {/* <Typography variant="h6" noWrap component="div">
                         Friends
-                    </Typography>
+                    </Typography> */}
+                    <div style={{ display: 'flex', flexFlow: 'row wrap', width: '100%', justifyContent: 'flex-end' }} >
+                        <Button onClick={logOut} variant="contained" color="warning" >LogOut</Button>
+                    </div>
                 </Toolbar>
             </AppBar>
             <Box

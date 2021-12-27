@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -15,21 +15,46 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import NewspaperIcon from '@mui/icons-material/Newspaper';
-import { useNavigate, NavLink } from 'react-router-dom';
+import { useNavigate, NavLink, Link } from 'react-router-dom';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { UserContext } from '../UserContext';
 import Button from '@mui/material/Button';
 import { auth } from '../firebase-config';
 import { signOut } from "firebase/auth";
-
+import { db } from '../firebase-config';
+import { collection, query, where, onSnapshot } from "firebase/firestore";
 const drawerWidth = 240;
 function Navbar(props) {
     const navigate = useNavigate();
-    const userDetails = React.useContext(UserContext)
+
+    const [search, setSearch] = useState('');
+    const [Data, setData] = useState([])
+
+
+    useEffect(() => {
+        function show() {
+            setData([])
+            if (search !== '') {
+                onSnapshot(query(collection(db, "users"), where("name", ">=", search), where("name", "<=", search + "\uf8ff")),
+                    (snapshot) => {
+                        setData(snapshot.docs.map((doc) => doc.data()))
+                    })
+
+            } else {
+                setData([]);
+                console.log("empty")
+            }
+        }
+        show();
+    }, [search]);
+
+
+
+    const userDetails = useContext(UserContext)
     const { window } = props;
-    const [mobileOpen, setMobileOpen] = React.useState(false);
-    const [navLinks, setNavLinks] = React.useState('loading')
-    React.useEffect(() => {
+    const [mobileOpen, setMobileOpen] = useState(false);
+    const [navLinks, setNavLinks] = useState('loading')
+    useEffect(() => {
         if (userDetails?.uid) {
             setNavLinks([
                 { name: "Profile", link: `/${userDetails.uid}`, icon: <AccountCircleIcon /> },
@@ -101,13 +126,22 @@ function Navbar(props) {
                     >
                         <MenuIcon />
                     </IconButton>
-                    {/* <Typography variant="h6" noWrap component="div">
-                        Friends
-                    </Typography> */}
-                    <div style={{ display: 'flex', flexFlow: 'row wrap', width: '100%', justifyContent: 'flex-end' }} >
-                        <Button onClick={logOut} variant="contained" color="warning" >LogOut</Button>
+                    <div style={{ display: 'flex', width: '100%', justifyContent: 'center' }} >
+                        <input className='searchField' type="search" onChange={(e) => { setSearch(e.target.value.toLowerCase().replace(/\s/g, '')) }} />
                     </div>
+                    {/* <div style={{ display: 'flex', justifyContent: 'flex-end' }} >
+                        <Button onClick={logOut} variant="contained" color="warning" >LogOut</Button>
+                    </div> */}
                 </Toolbar>
+                <div style={{ display: 'flex', justifyContent: 'center', fleDirection: 'column' }} >
+                    <div className='results'>
+                        {Data.map((val, index) => {
+                            return (<p style={{ color: 'white' }} key={index} > <Link to={`/${val.uid}`} > {val.name} </Link></p>)
+                        })
+                        }
+                    </div>
+                </div>
+
             </AppBar>
             <Box
                 component="nav"

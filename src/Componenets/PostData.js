@@ -4,10 +4,10 @@ import { collection, onSnapshot } from "firebase/firestore";
 import { useState, useEffect } from "react";
 import Newsfeed from "./Newsfeed";
 import CircularProgress from '@mui/material/CircularProgress';
-import { UidContext } from "../UserContext";
+import { UserContext } from "../UserContext";
 function PostData() {
   const [data, setData] = useState(['loading']);
-  const uid = useContext(UidContext)
+  const uid = useContext(UserContext.uid)
   useEffect(() => {
     if (uid) {
       onSnapshot(collection(db, 'users', uid, "posts"), (snapshot) => {

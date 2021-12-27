@@ -112,7 +112,7 @@ export default function SettingContent() {
           id="panel1bh-header"
         >
           <Typography sx={{ width: "33%", flexShrink: 0 }}>Name</Typography>
-          <Typography sx={{ color: "text.secondary" }}>{userDetails.name}</Typography>
+          <Typography sx={{ color: "text.secondary" }}>{`${userDetails.firstName} ${userDetails.lastName}`}</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <TextField

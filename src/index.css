@@ -52,3 +52,26 @@ code {
   border-radius: 50%;
   cursor: pointer;
 }
+
+.searchResult{
+  position: absolute;
+  top:30px;
+  left: 350px;
+  font-size:25px;
+  color: black;
+}
+
+.results{
+  display: flex;
+  justify-content: center;
+  height: auto;
+  width: 500px;
+  background-color: black;
+  flex-direction: column;
+}
+
+.searchField{
+  width: 500px;
+  height: 35px;
+  font-size: 30px;
+}

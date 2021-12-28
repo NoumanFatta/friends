@@ -29,7 +29,7 @@ function ProfileDetails() {
         <>
             <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }} >
                 <Avatar sx={{ width: 250, height: 250 }} style={{ cursor: 'pointer' }} alt="user profile" src={userDetails.img} />
-                <h1>{`${userDetails.firstName} ${userDetails.lastName}`}</h1>
+               {userDetails?.firstName && <h1>{`${userDetails.firstName} ${userDetails.lastName}`}</h1> }
 
                 {isAdmin ? <AddPostButton /> : null}
                 {postData[0] === 'loading' ?

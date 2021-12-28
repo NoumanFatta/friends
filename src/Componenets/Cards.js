@@ -49,7 +49,7 @@ export default function Cards(props) {
                         <MoreVertIcon />
                     </IconButton>
                 }
-                title= {userDetails.name}
+                title= {`${userDetails.firstName} ${userDetails.lastName}`}
                 subheader = {`${props.postdata.postedOn.toDate().toDateString()} ${props.postdata.postedOn.toDate().toLocaleTimeString()}`}
             />
             {props.postdata.img ?

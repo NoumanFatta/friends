@@ -22,35 +22,34 @@ import Button from '@mui/material/Button';
 import { auth } from '../firebase-config';
 import { signOut } from "firebase/auth";
 import { db } from '../firebase-config';
-import { collection, query, where, onSnapshot } from "firebase/firestore";
+import { collection, query, where, getDocs } from "firebase/firestore";
 const drawerWidth = 240;
 function Navbar(props) {
     const navigate = useNavigate();
-
-    const [search, setSearch] = useState('');
     const [Data, setData] = useState([])
-
-
-    useEffect(() => {
-        function show() {
-            setData([])
-            if (search !== '') {
-                onSnapshot(query(collection(db, "users"), where("name", ">=", search), where("name", "<=", search + "\uf8ff")),
-                    (snapshot) => {
-                        setData(snapshot.docs.map((doc) => doc.data()))
-                    })
-
-            } else {
-                setData([]);
-                console.log("empty")
-            }
-        }
-        show();
-    }, [search]);
-
-
-
     const userDetails = useContext(UserContext)
+
+    const searchUser = (e) => {
+        const search = e.target.value.toLowerCase().replace(/\s/g, '');
+        if (search !== '') {
+            setData([])
+            getDocs(query(collection(db, "users"), where("name", ">=", search), where("name", "<=", search + "\uf8ff")))
+                .then((querySnapshot) => {
+                    setData([])
+                    querySnapshot.forEach((doc) => {
+                        setData((prev) => [...prev, doc.data()]);
+                    });
+                });
+            setData([])
+        } else {
+            setTimeout(() => {
+                setData([])
+            }, 500);
+        }
+    }
+
+
+
     const { window } = props;
     const [mobileOpen, setMobileOpen] = useState(false);
     const [navLinks, setNavLinks] = useState('loading')
@@ -127,16 +126,14 @@ function Navbar(props) {
                         <MenuIcon />
                     </IconButton>
                     <div style={{ display: 'flex', width: '100%', justifyContent: 'center' }} >
-                        <input className='searchField' type="search" onChange={(e) => { setSearch(e.target.value.toLowerCase().replace(/\s/g, '')) }} />
-                    </div>
-                    {/* <div style={{ display: 'flex', justifyContent: 'flex-end' }} >
+                        <input className='searchField' type="search" onChange={searchUser} />
                         <Button onClick={logOut} variant="contained" color="warning" >LogOut</Button>
-                    </div> */}
+                    </div>
                 </Toolbar>
-                <div style={{ display: 'flex', justifyContent: 'center', fleDirection: 'column' }} >
+                <div style={{ display: 'flex', justifyContent: 'center', textAlign: 'center' }} >
                     <div className='results'>
                         {Data.map((val, index) => {
-                            return (<p style={{ color: 'white' }} key={index} > <Link to={`/${val.uid}`} > {val.name} </Link></p>)
+                            return (<p style={{ color: 'white' }} key={index} > <Link to={`/${val.uid}`} > {`${val.firstName} ${val.lastName}`} </Link></p>)
                         })
                         }
                     </div>

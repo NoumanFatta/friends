@@ -62,12 +62,9 @@ code {
 }
 
 .results{
-  display: flex;
-  justify-content: center;
   height: auto;
   width: 500px;
   background-color: black;
-  flex-direction: column;
 }
 
 .searchField{

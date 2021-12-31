@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -14,6 +14,9 @@ import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { UserDetails } from './Profile';
+import { useSelector } from "react-redux";
+import { db } from "../firebase-config";
+import { doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -29,11 +32,33 @@ const ExpandMore = styled((props) => {
 export default function Cards(props) {
     const userDetails = useContext(UserDetails);
     const [expanded, setExpanded] = useState(false);
+    const currentUserDetails = useSelector(state => state.user.user);
+    const [isLiked, setIsLiked] = useState(false);
 
+    useEffect(() => {
+        const likes = props.postdata.likes
+        setIsLiked(likes.includes(currentUserDetails.uid))
+    }, [currentUserDetails?.uid, props.postdata.likes])
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
-
+    const likePost = () => {
+        if (isLiked) {
+            const postRef = doc(db, "posts", props.postdata.postID);
+            updateDoc(postRef, {
+                likes: arrayRemove(currentUserDetails.uid)
+            }).then(() => {
+                setIsLiked(false)
+            });
+        } else {
+            const postRef = doc(db, "posts", props.postdata.postID);
+            updateDoc(postRef, {
+                likes: arrayUnion(currentUserDetails.uid)
+            }).then(() => {
+                setIsLiked(true)
+            });
+        }
+    }
     return (
         <Card sx={{ maxWidth: 345 }}>
             <CardHeader
@@ -49,8 +74,8 @@ export default function Cards(props) {
                         <MoreVertIcon />
                     </IconButton>
                 }
-                title= {`${userDetails.firstName} ${userDetails.lastName}`}
-                subheader = {`${props.postdata.postedOn.toDate().toDateString()} ${props.postdata.postedOn.toDate().toLocaleTimeString()}`}
+                title={`${userDetails.firstName} ${userDetails.lastName}`}
+                subheader={`${props.postdata.postedOn.toDate().toDateString()} ${props.postdata.postedOn.toDate().toLocaleTimeString()}`}
             />
             {props.postdata.img ?
                 <CardMedia
@@ -64,12 +89,12 @@ export default function Cards(props) {
 
             <CardContent>
                 <Typography variant="body2" color="text.secondary">
-                    {props.postdata.description}
+                {props.postdata.likes.length}
                 </Typography>
             </CardContent>
             <CardActions disableSpacing>
-                <IconButton aria-label="add to favorites">
-                    <FavoriteIcon />
+                <IconButton onClick={(e) => likePost(e)} aria-label="add to favorites">
+                    <FavoriteIcon color={isLiked ? 'warning' : ''} />
                 </IconButton>
                 <IconButton aria-label="share">
                     <ShareIcon />
@@ -85,7 +110,9 @@ export default function Cards(props) {
             </CardActions>
             <Collapse in={expanded} timeout="auto" unmountOnExit>
                 <CardContent>
-                    <Typography paragraph>Method:</Typography>
+                    <Typography paragraph>
+                        {props.postdata.description}
+                    </Typography>
                     <Typography paragraph>
                         Heat 1/2 cup of the broth in a pot until simmering, add saffron and set
                         aside for 10 minutes.

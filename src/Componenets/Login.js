@@ -1,92 +1,56 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import {
-  Grid,
-  Paper,
-  Avatar,
-  TextField,
-  Button,
-  Typography,
-} from "@material-ui/core";
+import React, { useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { auth } from "../firebase-config";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { useState } from "react";
-
-const Login = ({ handleChange }) => {
+const Login = () => {
   const navigate = useNavigate();
-  const [loginEmail, setLoginEmail] = useState("");
-  const [loginPassword, setLoginPassword] = useState("");
-  const loginFunction = () => {
-    signInWithEmailAndPassword(auth, loginEmail, loginPassword)
+  const userEmailRef = useRef(null)
+  const userPasswordRef = useRef(null)
+  const logIn = (e) => {
+    e.preventDefault();
+    const email = userEmailRef.current.value;
+    const password = userPasswordRef.current.value;
+    signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // const user = userCredential.user;
         navigate("/home");
       })
       .catch((error) => {
-        // const errorCode = error.code;
         const errorMessage = error.message;
         alert(errorMessage);
       });
-  };
-  const paperStyle = {
-    padding: 20,
-    height: "73vh",
-    width: 300,
-    margin: "0 auto",
-  };
-  const avatarStyle = { backgroundColor: "#1bbd7e" };
-  const btnstyle = { margin: "8px 0" };
-  return (
-    <div className="form">
-      <Grid>
-        <Paper style={paperStyle}>
-          <Grid align="center">
-            <Avatar style={avatarStyle}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <h2>Sign In</h2>
-          </Grid>
-          <TextField
-            onChange={(e) => {
-              setLoginEmail(e.target.value);
-            }}
-            label="Username"
-            placeholder="Enter username"
-            fullWidth
-            required
-          />
-          <TextField
-            onChange={(e) => {
-              setLoginPassword(e.target.value);
-            }}
-            label="Password"
-            placeholder="Enter password"
-            type="password"
-            fullWidth
-            required
-          />
-          <Button
-            onClick={loginFunction}
-            type="submit"
-            color="primary"
-            variant="contained"
-            style={btnstyle}
-            fullWidth
-          >
-            Sign in
-          </Button>
-          <Typography>
-            {/* <Link href="#">Forgot password ?</Link> */}
-          </Typography>
-          <Typography>
-            Don't you have an account ?<Link to="/signup">Sign Up</Link>
-          </Typography>
-        </Paper>
-      </Grid>
-    </div>
-  );
-};
+  }
 
-export default Login;
+  return (
+    <>
+      <div className="container">
+        <div className='logo_div' >
+          <img alt="logo" src="https://static.xx.fbcdn.net/rsrc.php/y8/r/dF5SId3UHWd.svg" />
+          <h2 className='tag_line' >Facebook helps you connect and share with the people in your life.</h2>
+        </div>
+        <div className="form_element">
+          <form onSubmit={logIn} >
+            <div className="inputs">
+              <input ref={userEmailRef} type="email" placeholder='Enter your email address' />
+            </div>
+            <div className="inputs">
+              <input ref={userPasswordRef} type="password" placeholder='Password' />
+            </div>
+            <div className="inputs">
+              <button type="submit" className='btn'>
+                Log In
+              </button>
+            </div>
+          </form>
+          <div className='border_bottom' ></div>
+          <div className='create_acc_btn' >
+            <Link to='/signup' >Create New Account</Link>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
+export default Login

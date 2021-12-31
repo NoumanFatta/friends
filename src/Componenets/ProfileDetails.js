@@ -4,7 +4,7 @@ import { UserDetails } from './Profile';
 import Cards from './Cards';
 import { db } from '../firebase-config';
 import CircularProgress from '@mui/material/CircularProgress';
-import { onSnapshot, collection, where, query,orderBy } from 'firebase/firestore';
+import { onSnapshot, collection, where, query, orderBy } from 'firebase/firestore';
 import AddPostButton from './AddPostButton';
 import { useSelector } from 'react-redux';
 
@@ -13,7 +13,7 @@ function ProfileDetails() {
     const [postData, setPostData] = useState(['loading']);
     const [isAdmin, setIsAdmin] = useState(false);
     const currentUserDetails = useSelector(state => state.user.user);
-    
+
     useEffect(
         () => {
             if (userDetails.uid) {
@@ -30,7 +30,7 @@ function ProfileDetails() {
         <>
             <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }} >
                 <Avatar sx={{ width: 250, height: 250 }} style={{ cursor: 'pointer' }} alt="user profile" src={userDetails.img} />
-               {userDetails?.firstName && <h1>{`${userDetails.firstName} ${userDetails.lastName}`}</h1> }
+                {userDetails?.firstName && <h1>{`${userDetails.firstName} ${userDetails.lastName}`}</h1>}
 
                 {isAdmin ? <AddPostButton /> : null}
                 {postData[0] === 'loading' ?

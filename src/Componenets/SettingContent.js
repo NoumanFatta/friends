@@ -18,7 +18,8 @@ import { useSelector } from "react-redux";
 export default function SettingContent() {
   const userDetails = useSelector(state => state.user.user);
 
-  const nameChange = useRef(null);
+  const fNameChange = useRef(null);
+  const lNameChange = useRef(null);
   const emailChange = useRef(null);
   const passwordChange = useRef(null);
   const [expanded, setExpanded] = React.useState(false);
@@ -34,7 +35,9 @@ export default function SettingContent() {
   };
   const updateUser = (e) => {
     const elementid = e.target.id;
-    const name = nameChange.current.value;
+    const firstName = fNameChange.current.value;
+    const lastName = lNameChange.current.value;
+    const name = firstName.toLowerCase().replace(/\s/g, '')+lastName.toLowerCase().replace(/\s/g);
     const email = emailChange.current.value;
     const password = passwordChange.current.value;
     const docRef = doc(db, "users", userDetails.uid);
@@ -47,7 +50,7 @@ export default function SettingContent() {
             setDoc(
               docRef,
               {
-                [elementid]: email,
+               email
               },
               { merge: true }
             ).then(() => {
@@ -70,7 +73,7 @@ export default function SettingContent() {
             setDoc(
               docRef,
               {
-                [elementid]: password,
+                password
               },
               { merge: true }
             ).then(() => {
@@ -84,13 +87,15 @@ export default function SettingContent() {
           });
       }
     } else if (elementid === "name") {
-      if (name === "") alert("Textbox must not be empty");
+      if (firstName === "" || lastName === '' ) alert("Textbox must not be empty");
       else {
         setButtonState({ ...buttonState, nameButton: false });
         setDoc(
           docRef,
           {
-            [elementid]: name,
+            firstName,
+            lastName,
+            name
           },
           { merge: true }
         ).then(() => {
@@ -116,10 +121,16 @@ export default function SettingContent() {
         </AccordionSummary>
         <AccordionDetails>
           <TextField
-            inputRef={nameChange}
+            inputRef={fNameChange}
             autoComplete="off"
             helperText=" "
-            label="Name"
+            label="First Name"
+          />
+          <TextField
+            inputRef={lNameChange}
+            autoComplete="off"
+            helperText=" "
+            label="Last Name"
           />
           <div
             style={{

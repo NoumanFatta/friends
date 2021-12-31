@@ -1,4 +1,4 @@
-import React, { useState,  useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -9,7 +9,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import CloseIcon from '@mui/icons-material/Close';
 import { auth, db, storage } from "../firebase-config";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, setDoc, doc } from "firebase/firestore";
 import uuid from 'react-uuid';
 
 
@@ -52,30 +52,37 @@ export default function FormDialog() {
                 .then(() => {
                     getDownloadURL(ref(storage, `${user.uid}/posts/${UniqueId}`))
                         .then((url) => {
-                            addDoc(collection(db, "posts"), {
+                            const docRef = doc(collection(db, "posts"));
+                            setDoc(docRef, {
                                 description: description,
                                 img: url,
                                 postedOn: new Date(),
-                                postedBy: user.uid
+                                postedBy: user.uid,
+                                likes: [],
+                                postID: docRef.id
+                            }).then(() => {
+                                handleClose();
+                            }).catch((error) => {
+                                console.log(error)
                             });
-                            handleClose();
                         })
                         .catch((error) => {
-                            alert(error);
+                            console.log(error);
                         });
                 });
         } else {
-            addDoc(collection(db, `posts`), {
+            const docRef = doc(collection(db, "posts"));
+            setDoc(docRef, {
                 description: description,
                 postedOn: new Date(),
-                postedBy: user.uid
-            })
-                .then(() => {
-                    handleClose();
-                })
-                .catch((error) => {
-                    alert(error);
-                });
+                postedBy: user.uid,
+                likes: [],
+                postID: docRef.id
+            }).then(() => {
+                handleClose();
+            }).catch((error) => {
+                alert(error);
+            });
         }
     };
 
@@ -126,7 +133,7 @@ export default function FormDialog() {
                                     height: '200px',
                                     marginTop: '2rem',
                                 }} >
-                                    <img alt = 'img-prievew'
+                                    <img alt='img-prievew'
                                         style={{
                                             maxWidth: '100%',
                                             border: '3px solid black'

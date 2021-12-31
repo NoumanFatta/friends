@@ -13,10 +13,10 @@ import { db } from "../firebase-config";
 import { useRef } from "react";
 import { auth } from "../firebase-config";
 import { updateEmail, updatePassword } from "firebase/auth";
-import {UserContext} from '../UserContext'
+import { useSelector } from "react-redux";
+
 export default function SettingContent() {
- 
-  const userDetails = React.useContext(UserContext);
+  const userDetails = useSelector(state => state.user.user);
 
   const nameChange = useRef(null);
   const emailChange = useRef(null);
@@ -112,7 +112,7 @@ export default function SettingContent() {
           id="panel1bh-header"
         >
           <Typography sx={{ width: "33%", flexShrink: 0 }}>Name</Typography>
-          <Typography sx={{ color: "text.secondary" }}>{`${userDetails.firstName} ${userDetails.lastName}`}</Typography>
+          <Typography sx={{ color: "text.secondary" }}> {userDetails && `${userDetails.firstName} ${userDetails.lastName}` }  </Typography>
         </AccordionSummary>
         <AccordionDetails>
           <TextField
@@ -160,7 +160,7 @@ export default function SettingContent() {
           id="panel2bh-header"
         >
           <Typography sx={{ width: "33%", flexShrink: 0 }}>Email</Typography>
-          <Typography sx={{ color: "text.secondary" }}>{userDetails.email}</Typography>
+          <Typography sx={{ color: "text.secondary" }}>{userDetails?.email}</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <TextField

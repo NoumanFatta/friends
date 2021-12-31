@@ -7,6 +7,7 @@ import AddPostButton from './AddPostButton'
 
 
 export default function Home() {
+
   const drawerWidth = 240;
   return (
     <>

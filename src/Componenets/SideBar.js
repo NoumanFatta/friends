@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -13,22 +13,20 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import NewspaperIcon from '@mui/icons-material/Newspaper';
 import { useNavigate, NavLink, Link } from 'react-router-dom';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { UserContext } from '../UserContext';
 import Button from '@mui/material/Button';
 import { auth } from '../firebase-config';
 import { signOut } from "firebase/auth";
 import { db } from '../firebase-config';
 import { collection, query, where, getDocs } from "firebase/firestore";
+import { useSelector } from 'react-redux';
 const drawerWidth = 240;
 function Navbar(props) {
     const navigate = useNavigate();
     const [Data, setData] = useState([])
-    const userDetails = useContext(UserContext)
-
+    const userDetails = useSelector(state => state.user.user);
     const searchUser = (e) => {
         const search = e.target.value.toLowerCase().replace(/\s/g, '');
         if (search !== '') {

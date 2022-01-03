@@ -21,6 +21,7 @@ import { db } from "../firebase-config";
 import { doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 import { collection, setDoc, onSnapshot, getDoc, getDocs, orderBy, query } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
+import { ref } from 'firebase/storage';
 
 
 const ExpandMore = styled((props) => {
@@ -54,20 +55,48 @@ export default function Cards(props) {
         //             });
         //         });
         //     });
+    }, [currentUserDetails?.uid, props.postdata.likes, props.postdata.postID])
 
-        const docRef = query(collection(db, "posts", props.postdata.postID, "comments"), orderBy('commentedOn', 'desc'));
-        onSnapshot(docRef, (snapshot) => {
-            snapshot.docChanges().forEach((change) => {
-                if (change.type === "added") {
-                    const nameRef = doc(db, "users", change.doc.data().commentedBy);
-                    getDoc(nameRef).then((docSnap) => {
-                        setComments((prev) => [{ data: change.doc.data(), name: docSnap.data().firstName },...prev]);
-                    });
-                }
+    useEffect(() => {
+        const docRef = query(collection(db, "posts", props.postdata.postID, "comments"), orderBy('commentedOn', 'asc'));
+        // onSnapshot(docRef, (snapshot) => {
+        //     snapshot.docChanges().forEach((change) => {
+        //         if (change.type === "added") {
+        //             const nameRef = doc(db, "users", change.doc.data().commentedBy);
+        //             getDoc(nameRef).then((docSnap) => {
+        //                 setComments((prev) => [...prev, { data: change.doc.data(), name: docSnap.data().firstName }]);
+        //             });
+        //         }
+        //         if (change.type === "removed") {
+        //             const nameRef = doc(db, "users", change.doc.data().commentedBy);
+        //             getDoc(nameRef).then((docSnap) => {
+        //                 setComments((prev) => [...prev, { data: change.doc.data(), name: docSnap.data().firstName }]);
+        //             });
+        //         }
+        //     });
+        // });
+        let finalCom = []
+        onSnapshot(docRef, (querySnapshot) => {
+            const cities = [];
+            const name = []
+            // const citAut = []
+            querySnapshot.forEach((docs) => {
+                cities.push(docs.data().comment);
+                const nameRef = doc(db, "users", docs.data().commentedBy);
+                getDoc(nameRef).then((docSnap) => {
+                    setCommentName((pre)=>[...pre,docSnap.data().firstName])
+                });
             });
+            setComments(cities)
         });
 
-    }, [currentUserDetails?.uid, props.postdata.likes, props.postdata.postID])
+    }, [props.postdata.postID])
+    let finalArr = [];
+
+    for (var i = 0; i < comments.length; i++) {
+        finalArr.push({ name: commentName[i], comment: comments[i] })
+        console.log(`turn ${i}`)
+    }
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
@@ -170,10 +199,17 @@ export default function Cards(props) {
                     >
                         Comment
                     </Button>
-                    {comments.map((val, ind) => {
-                        return (<p key={ind}> <span> {val.name}- </span> {val.data.comment} </p>)
-                    })
-                    }
+
+                    {/* {commentName.map((val) => {
+                        console.log(val)
+                    })} */}
+
+                    <div style={{ display: 'flex', flexDirection: 'column-reverse' }} >
+                        {finalArr.map((val, ind) => {
+                            return (<p key={ind}> <span> {val.name}- </span> {val.comment} </p>)
+                        })
+                        }
+                    </div>
 
                     {/* {
                         commentName.map((val, ind) => {
